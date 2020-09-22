@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 
 import Editor from './Editor';
 
@@ -6,6 +6,21 @@ const App = () => {
   const [html, setHtml] = useState('');
   const [css, setCss] = useState('');
   const [js, setJs] = useState('');
+  const [srcDoc, setSrcDoc] = useState('');
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setSrcDoc(`
+      <html>
+        <body>${html}</body>
+        <style>${css}</style>
+        <script>${js}</script>
+      </html>
+      `);
+    }, 250);
+
+    return () => clearTimeout(timeout);
+  }, [html, css, js]);
 
   return (
     <Fragment>
@@ -31,6 +46,7 @@ const App = () => {
       </div>
       <div className='pane'>
         <iframe
+          srcDoc={srcDoc}
           title='output'
           sandbox='allow-scripts'
           frameBorder='0'
